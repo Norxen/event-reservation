@@ -70,7 +70,7 @@
   margin: 1rem;
   min-height: 15rem;
   text-align: center;
-  font-size: 1rem;
-  color: darken(map-get($app-colors, 'text'), 10%);
+  color: darken(map-get($app-colors, 'accent'), 10%);
   background-color: lighten(map-get($app-colors, 'background'), 10%);
+  @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.8rem, $weight: bold, $lineHeight: 1.5, $letterSpacing: normal);
 }

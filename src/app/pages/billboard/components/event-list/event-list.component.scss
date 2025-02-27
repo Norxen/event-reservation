@@ -1,4 +1,5 @@
 @import 'mixins';
+@import 'colors';
 
 .event-list {
   @include mobile {
@@ -27,7 +28,21 @@
 }
 
 .no-events {
+  @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.8rem, $weight: bold, $lineHeight: 1.5, $letterSpacing: normal);
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid map-get($app-colors, 'text');
+  padding: 16px;
+  min-height: 15rem;
   text-align: center;
-  padding: 1rem;
-  font-size: 1.2rem;
+  color: darken(map-get($app-colors, 'text'), 10%);
+  background-color: lighten(map-get($app-colors, 'background'), 10%);
+
+  @include mobile {
+    width: 80%;
+  }
 }
