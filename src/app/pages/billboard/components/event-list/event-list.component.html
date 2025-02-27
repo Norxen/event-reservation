@@ -1,0 +1,14 @@
+<ng-container *ngIf="events$ | async as events">
+  <div class="event-list">
+    <div *ngIf="events.length > 0; else noEvents" class="event-list__grid">
+      <app-event-card *ngFor="let event of events" [event]="event"></app-event-card>
+    </div>
+  </div>
+
+</ng-container>
+
+<ng-template #noEvents>
+  <div class="no-events">
+    <p>EVENT INFO NOT FOUND</p>
+  </div>
+</ng-template>

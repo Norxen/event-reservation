@@ -1,0 +1,17 @@
+<ng-container *ngIf="eventInfo; else notFound">
+  <div class="session-list">
+    <div *ngFor="let session of getSessions" class="session-list__row">
+      <span class="session-list__info">
+        Fecha: {{ session.date | date:'dd/MM/YYYY' }}, Disponibilidad: {{ session.availability }}
+      </span>
+      <div class="session-list__counter">
+        <button mat-button (click)="decrement(session)">-</button>
+        <span class="session-list__quantity">{{ session.selected }}</span>
+        <button mat-button (click)="increment(session)">+</button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #notFound>
+  <span class="event-notFound">EVENT INFO NOT FOUND</span>
+</ng-template>

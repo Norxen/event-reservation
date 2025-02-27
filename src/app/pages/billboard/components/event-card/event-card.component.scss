@@ -1,0 +1,78 @@
+@import 'mixins';
+@import 'colors';
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border: 1px solid lighten(map-get($app-colors, 'text'), 40%);
+  border-radius: 0;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+
+  @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.2rem, $weight: normal, $lineHeight: 1.5, $letterSpacing: normal);
+
+  &__header {
+    margin-bottom: 8px;
+    margin-left: 16px;
+  }
+
+  &__title,
+  &__subtitle {
+    @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.2rem, $weight: bold, $lineHeight: 1.5, $letterSpacing: normal);
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  &__image-wrapper {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  &__image {
+    width: 100%;
+    height: 200px;
+    display: block;
+    object-fit: cover;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__content {
+    margin-top: 8px;
+  }
+
+  &__actions {
+    margin-top: auto;
+    width: 100%;
+    text-align: right;
+    padding: 0;
+
+    button {
+      transform: translateY(2px);
+      width: 100%;
+      padding: 0;
+      height: 100%;
+      color: map-get($app-colors, 'white');
+      background-color: map-get($app-colors, 'primary');
+      border: 1px solid lighten(map-get($app-colors, 'text'), 40%) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+  }
+
+  &__description {
+    @include mobile {
+      display: none;
+    }
+  }
+}

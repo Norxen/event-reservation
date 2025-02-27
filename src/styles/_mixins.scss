@@ -1,0 +1,32 @@
+$breakpoint-mobile: 786px;
+$breakpoint-desktop: 787px;
+
+@mixin mobile {
+  @media only screen and (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media only screen and (min-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+@mixin font(
+  $family: 'Arial, sans-serif',
+  $size: 16px,
+  $weight: normal,
+  $lineHeight: 1.5,
+  $letterSpacing: normal
+) {
+  font-family: $family !important;
+  font-size: $size !important;
+  font-weight: $weight !important;
+  line-height: $lineHeight !important;
+  letter-spacing: $letterSpacing ;
+}
+
+@mixin transition($properties, $duration: 0.3s, $ease: ease) {
+  transition: $properties $duration $ease;
+}

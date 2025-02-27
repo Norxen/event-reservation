@@ -1,0 +1,19 @@
+$primary-color: #3498db;
+$secondary-color: #2ecc71;
+$accent-color: #e74c3c;
+$background-color: #ecf0f1;
+$link-color: #2265c9;
+$text-color: #2c3e50;
+$white: #fff;
+$black: #000;
+
+$app-colors: (
+  'primary': $primary-color,
+  'secondary': $secondary-color,
+  'accent': $accent-color,
+  'background': $background-color,
+  'link': $link-color,
+  'text': $text-color,
+  'white': $white,
+  'black': $black
+);

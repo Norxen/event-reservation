@@ -1,0 +1,76 @@
+@import 'mixins';
+@import 'colors';
+
+.session-list {
+  // Replace black border with the text color (which is a dark shade)
+  border: 1px solid map-get($app-colors, 'text');
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  margin: 1rem;
+
+  @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1rem, $weight: normal, $lineHeight: 1.5, $letterSpacing: normal);
+
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 50%;
+    margin: 0;
+    text-wrap: wrap;
+  }
+
+  &__counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: fit-content;
+    margin-left: auto;
+    font-size: 1rem;
+  }
+
+  &__counter button {
+    border: none;
+    background: none;
+    color: map-get($app-colors, 'primary');
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: x-large;
+
+    &:hover {
+      color: darken(map-get($app-colors, 'primary'), 15%);
+    }
+  }
+
+  &__counter button:first-child {
+    transform: translateY(-2px);
+  }
+
+  &__quantity {
+    margin: auto 4px;
+    @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.2rem, $weight: bold, $lineHeight: 1.5, $letterSpacing: normal);
+
+  }
+}
+
+.event-notFound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid map-get($app-colors, 'text');
+  padding: 16px;
+  margin: 1rem;
+  min-height: 15rem;
+  text-align: center;
+  font-size: 1rem;
+  color: darken(map-get($app-colors, 'text'), 10%);
+  background-color: lighten(map-get($app-colors, 'background'), 10%);
+}
