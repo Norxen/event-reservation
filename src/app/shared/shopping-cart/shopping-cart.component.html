@@ -1,6 +1,6 @@
 <div class="shopping-cart">
-  <ng-container *ngIf="cartGrouped && cartGrouped.length > 0; else emptyCart">
-    <div class="shopping-cart__event-group" *ngFor="let eventGroup of cartGrouped">
+  <ng-container *ngIf="cartGrouped$ | async else emptyCart">
+    <div class="shopping-cart__event-group" *ngFor="let eventGroup of cartGrouped$ | async">
       <h4 class="shopping-cart__event-title">{{ eventGroup.eventTitle }}</h4>
       <div class="shopping-cart__session" *ngFor="let session of eventGroup.sessions">
         <span class="shopping-cart__session-date">

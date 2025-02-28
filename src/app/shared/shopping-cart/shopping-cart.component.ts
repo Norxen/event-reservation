@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CartService } from '../../core/services/cart-service/cart.service';
 import { CartGroup } from '../../core/services/interfaces/cart.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -12,15 +13,9 @@ import { CartGroup } from '../../core/services/interfaces/cart.interface';
   styleUrls: ['./shopping-cart.component.scss'],
 })
 export class ShoppingCartComponent {
-  cartGrouped: CartGroup[] = [];
+  cartGrouped$: Observable<CartGroup[]> = this.cartService.cartGroups$;
 
   constructor(private cartService: CartService) {}
-
-  ngOnInit(): void {
-    this.cartService.cartGroups$.subscribe((grouped) => {
-      this.cartGrouped = grouped;
-    });
-  }
 
   removeItem(eventId: number, sessionDate: string): void {
     this.cartService.removeItem(eventId, sessionDate);

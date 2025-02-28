@@ -1,13 +1,13 @@
-<ng-container *ngIf="eventInfo; else notFound">
+<ng-container *ngIf="computedEventInfo$ | async as eventInfo; else notFound">
   <div class="session-list">
-    <div *ngFor="let session of getSessions" class="session-list__row">
+    <div *ngFor="let session of eventInfo.sessions" class="session-list__row">
       <span class="session-list__info">
-        Fecha: {{ session.date | date:'dd/MM/YYYY' }}, Disponibilidad: {{ session.availability }}
+        Fecha: {{ session.date | date:'dd/MM/yyyy' }}, Disponibilidad: {{ session.availability }}
       </span>
       <div class="session-list__counter">
-        <button mat-button (click)="decrement(session)">-</button>
+        <button mat-button (click)="decrement(session, eventInfo)">-</button>
         <span class="session-list__quantity">{{ session.selected }}</span>
-        <button mat-button (click)="increment(session)">+</button>
+        <button mat-button (click)="increment(session, eventInfo)">+</button>
       </div>
     </div>
   </div>

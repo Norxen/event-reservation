@@ -14,7 +14,14 @@ import {
   EventInfoI,
   EventSessionI,
 } from '../../../../core/services/interfaces/event-info.interface';
-import { Subscription, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  Subscription,
+  take,
+} from 'rxjs';
 import { CartGroup } from '../../../../core/services/interfaces/cart.interface';
 
 @Component({
@@ -25,79 +32,57 @@ import { CartGroup } from '../../../../core/services/interfaces/cart.interface';
   styleUrls: ['./session-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionListComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() eventInfo: EventInfoI | null = null;
-  private cartSubscription!: Subscription;
+export class SessionListComponent implements OnDestroy {
+  private eventInfoSubject = new BehaviorSubject<EventInfoI | null>(null);
 
-  constructor(public cartService: CartService, private cd: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    this.cartSubscription = this.cartService.cartGroups$.subscribe(
-      (groups: CartGroup[]) => {
-        this.updateSelections(groups);
-        this.cd.markForCheck();
-      }
+  @Input() set eventInfo(value: EventInfoI | null) {
+    this.eventInfoSubject.next(
+      value ? { ...value, sessions: [...value.sessions] } : null
     );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['eventInfo']) {
-      this.cartService.cartGroups$
-        .pipe(take(1))
-        .subscribe((groups: CartGroup[]) => {
-          this.updateSelections(groups);
-          this.cd.markForCheck();
-        });
-    }
-  }
-
-  private updateSelections(groups: CartGroup[]): void {
-    if (this.eventInfo) {
-      const group = groups.find((g) => g.eventId === this.eventInfo!.id);
-      this.eventInfo.sessions.forEach((session: EventSessionI) => {
+  computedEventInfo$: Observable<EventInfoI | null> = combineLatest([
+    this.eventInfoSubject.asObservable(),
+    this.cartService.cartGroups$,
+  ]).pipe(
+    map(([eventInfo, groups]) => {
+      if (!eventInfo) {
+        return null;
+      }
+      const group = groups.find((g) => g.eventId === eventInfo.id);
+      const newSessions = eventInfo.sessions.map((session) => {
         const matchingSession = group
           ? group.sessions.find((s) => s.sessionDate === session.date)
           : null;
-        session.selected = matchingSession ? matchingSession.quantity : 0;
+        return {
+          ...session,
+          selected: matchingSession ? matchingSession.quantity : 0,
+        };
       });
-    }
-  }
+      return { ...eventInfo, sessions: newSessions };
+    })
+  );
 
-  get getSessions(): EventSessionI[] {
-    if (!this.eventInfo) {
-      return [];
-    }
-    return this.eventInfo.sessions.slice();
-  }
+  constructor(public cartService: CartService) {}
 
-  increment(session: EventSessionI): void {
-    if (!this.eventInfo) {
-      return;
-    }
+  increment(session: EventSessionI, eventInfo: EventInfoI): void {
     if ((session.selected || 0) < session.availability) {
-      session.selected = (session.selected || 0) + 1;
       this.cartService.addItem({
-        eventId: this.eventInfo.id,
-        eventTitle: this.eventInfo.title,
+        eventId: eventInfo.id,
+        eventTitle: eventInfo.title,
         sessionDate: session.date,
         quantity: 1,
       });
     }
   }
 
-  decrement(session: EventSessionI): void {
-    if (!this.eventInfo) {
-      return;
-    }
+  decrement(session: EventSessionI, eventInfo: EventInfoI): void {
     if ((session.selected || 0) > 0) {
-      session.selected = (session.selected || 0) - 1;
-      this.cartService.removeItem(this.eventInfo.id, session.date);
+      this.cartService.removeItem(eventInfo.id, session.date);
     }
   }
 
   ngOnDestroy(): void {
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
-    }
+    this.eventInfoSubject.complete();
   }
 }
