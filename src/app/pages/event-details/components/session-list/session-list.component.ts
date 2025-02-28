@@ -1,28 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Input,
-  OnChanges,
   OnDestroy,
-  OnInit,
-  SimpleChanges,
 } from '@angular/core';
 import { CartService } from '../../../../core/services/cart-service/cart.service';
 import {
   EventInfoI,
   EventSessionI,
 } from '../../../../core/services/interfaces/event-info.interface';
-import {
-  BehaviorSubject,
-  combineLatest,
-  map,
-  Observable,
-  Subscription,
-  take,
-} from 'rxjs';
-import { CartGroup } from '../../../../core/services/interfaces/cart.interface';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-session-list',
