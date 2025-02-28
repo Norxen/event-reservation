@@ -58,6 +58,7 @@
     padding: 0;
 
     button {
+      @include font($family: 'Open Sans, Helvetica, Arial, sans-serif', $size: 1.2rem, $weight: bold, $lineHeight: 1.5, $letterSpacing: normal);
       transform: translateY(2px);
       width: 100%;
       padding: 0;
