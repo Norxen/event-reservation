@@ -1,24 +1,26 @@
 <div class="shopping-cart">
-  <ng-container *ngIf="cartGrouped$ | async else emptyCart">
-    <div class="shopping-cart__event-group" *ngFor="let eventGroup of cartGrouped$ | async">
-      <h4 class="shopping-cart__event-title">{{ eventGroup.eventTitle }}</h4>
-      <div class="shopping-cart__session" *ngFor="let session of eventGroup.sessions">
-        <span class="shopping-cart__session-date">
-          {{ session.sessionDate | date:'dd/MM/YYYY' }}
-        </span>
-        <span class="shopping-cart__session-quantity">
-          x{{ session.quantity }}
-        </span>
-        <img
-          class="shopping-cart__remove-icon"
-          src="assets/img/trash.png"
-          alt="Eliminar"
-          (click)="removeItem(eventGroup.eventId, session.sessionDate)">
+  <ng-container *ngIf="(cartGrouped$ | async) as cartGrouped else emptyCart">
+    <ng-container *ngIf="cartGrouped.length > 0 else emptyCart">
+      <div class="shopping-cart__event-group" *ngFor="let eventGroup of cartGrouped$ | async">
+        <h4 class="shopping-cart__event-title">{{ eventGroup.eventTitle }}</h4>
+        <div class="shopping-cart__session" *ngFor="let session of eventGroup.sessions">
+          <span class="shopping-cart__session-date">
+            {{ session.sessionDate | date:'dd/MM/YYYY' }}
+          </span>
+          <span class="shopping-cart__session-quantity">
+            x{{ session.quantity }}
+          </span>
+          <img
+            class="shopping-cart__remove-icon"
+            src="assets/img/trash.png"
+            alt="Eliminar"
+            (click)="removeItem(eventGroup.eventId, session.sessionDate)">
+        </div>
       </div>
-    </div>
-    <button class="shopping-cart__clear" (click)="clearCart()">
-      Vaciar Carrito
-    </button>
+      <button class="shopping-cart__clear" (click)="clearCart()">
+        Vaciar Carrito
+      </button>
+    </ng-container>
   </ng-container>
 
   <ng-template #emptyCart>
