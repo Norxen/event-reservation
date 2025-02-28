@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { CartItem } from '../interfaces/cart.interface';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CartItem, CartGroup, CartSession } from '../interfaces/cart.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,36 @@ export class CartService {
     this.getCartFromStorage()
   );
   cart$ = this.cartSubject.asObservable();
+
+  cartGroups$: Observable<CartGroup[]> = this.cart$.pipe(
+    map((items) => {
+      const grouped = new Map<number, CartGroup>();
+      items.forEach((item) => {
+        const session: CartSession = {
+          sessionDate: item.sessionDate,
+          quantity: item.quantity,
+        };
+
+        if (!grouped.has(item.eventId)) {
+          grouped.set(item.eventId, {
+            eventId: item.eventId,
+            eventTitle: item.eventTitle,
+            sessions: [session],
+          });
+        } else {
+          const group = grouped.get(item.eventId)!;
+          group.sessions.push(session);
+        }
+
+        grouped
+          .get(item.eventId)!
+          .sessions.sort(
+            (a, b) => Number(a.sessionDate) - Number(b.sessionDate)
+          );
+      });
+      return Array.from(grouped.values());
+    })
+  );
 
   constructor() {}
 
@@ -69,7 +100,7 @@ export class CartService {
     this.updateStorage(currentCart);
   }
 
-  clearCart() {
+  clearCart(): void {
     this.cartSubject.next([]);
     this.updateStorage([]);
   }

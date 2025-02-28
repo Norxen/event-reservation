@@ -2,7 +2,6 @@
 @import 'colors';
 
 .session-list {
-  // Replace black border with the text color (which is a dark shade)
   border: 1px solid map-get($app-colors, 'text');
   display: flex;
   flex-direction: column;

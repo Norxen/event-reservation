@@ -14,52 +14,53 @@ import {
   EventInfoI,
   EventSessionI,
 } from '../../../../core/services/interfaces/event-info.interface';
-import { CartItem } from '../../../../core/services/interfaces/cart.interface';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
+import { CartGroup } from '../../../../core/services/interfaces/cart.interface';
 
 @Component({
   selector: 'app-session-list',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './session-list.component.html',
-  styleUrl: './session-list.component.scss',
+  styleUrls: ['./session-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionListComponent implements OnInit, OnDestroy, OnChanges {
+export class SessionListComponent implements OnInit, OnChanges, OnDestroy {
   @Input() eventInfo: EventInfoI | null = null;
-  cartItems: CartItem[] = [];
   private cartSubscription!: Subscription;
 
   constructor(public cartService: CartService, private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.cartSubscription = this.cartService.cart$.subscribe((items) => {
-      this.cartItems = items;
-      this.updateSessionSelections();
-      // Mark for check since we're using OnPush
-      this.cd.markForCheck();
-    });
+    this.cartSubscription = this.cartService.cartGroups$.subscribe(
+      (groups: CartGroup[]) => {
+        this.updateSelections(groups);
+        this.cd.markForCheck();
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['eventInfo']) {
-      this.updateSessionSelections();
-      this.cd.markForCheck();
+      this.cartService.cartGroups$
+        .pipe(take(1))
+        .subscribe((groups: CartGroup[]) => {
+          this.updateSelections(groups);
+          this.cd.markForCheck();
+        });
     }
   }
 
-  private updateSessionSelections(): void {
-    if (!this.eventInfo) {
-      return;
+  private updateSelections(groups: CartGroup[]): void {
+    if (this.eventInfo) {
+      const group = groups.find((g) => g.eventId === this.eventInfo!.id);
+      this.eventInfo.sessions.forEach((session: EventSessionI) => {
+        const matchingSession = group
+          ? group.sessions.find((s) => s.sessionDate === session.date)
+          : null;
+        session.selected = matchingSession ? matchingSession.quantity : 0;
+      });
     }
-    this.eventInfo.sessions.forEach((session) => {
-      const matchingCartItem = this.cartItems.find(
-        (item) =>
-          item.eventId === this.eventInfo!.id &&
-          item.sessionDate === session.date
-      );
-      session.selected = matchingCartItem ? matchingCartItem.quantity : 0;
-    });
   }
 
   get getSessions(): EventSessionI[] {
@@ -95,7 +96,6 @@ export class SessionListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
     }
